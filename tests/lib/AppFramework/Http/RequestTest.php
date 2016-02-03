@@ -26,7 +26,7 @@ class RequestTest extends \Test\TestCase {
 	protected $stream = 'fakeinput://data';
 	/** @var ISecureRandom */
 	protected $secureRandom;
-	/** @var IConfig */
+	/** @var IConfig | \PHPUnit_Framework_MockObject_MockObject */
 	protected $config;
 	/** @var CsrfTokenManager */
 	protected $csrfTokenManager;
@@ -1290,6 +1290,7 @@ class RequestTest extends \Test\TestCase {
 			->with('overwritecondaddr')
 			->will($this->returnValue($overwriteCondAddr));
 
+		/** @var Request | \PHPUnit_Framework_MockObject_MockObject $request */
 		$request = $this->getMockBuilder('\OC\AppFramework\Http\Request')
 			->setMethods(['getScriptName'])
 			->setConstructorArgs([
