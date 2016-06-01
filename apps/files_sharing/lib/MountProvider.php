@@ -78,7 +78,7 @@ class MountProvider implements IMountProvider {
 
 			try {
 				$mounts[] = new SharedMount(
-					'\OC\Files\Storage\Shared',
+					'\OCA\Files_Sharing\SharedStorage',
 					$mounts,
 					[
 						'user' => $user->getUID(),
