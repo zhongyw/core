@@ -36,8 +36,12 @@ class JobListTest extends TestCase {
 
 		$this->connection = \OC::$server->getDatabaseConnection();
 		$this->clearJobsList();
-		$this->config = $this->getMock('OCP\IConfig');
-		$this->timeFactory = $this->getMock('OCP\AppFramework\Utility\ITimeFactory');
+		$this->config = $this->getMockBuilder('OCP\IConfig')
+			->disableOriginalConstructor()
+			->getMock();
+		$this->timeFactory = $this->getMockBuilder('OCP\AppFramework\Utility\ITimeFactory')
+			->disableOriginalConstructor()
+			->getMock();
 		$this->instance = new \OC\BackgroundJob\JobList(
 			$this->connection,
 			$this->config,
