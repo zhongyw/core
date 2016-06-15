@@ -607,13 +607,17 @@
 				});
 
 				var reshare = false;
+				var reshares = false;
 				if (data2[0].ocs.data.length) {
 					reshare = data2[0].ocs.data[0];
+					reshares = data2[0].ocs.data;
 				}
 
 				model.set(model.parse({
 					shares: sharesMap,
-					reshare: reshare
+					reshare: reshare,
+					reshares: reshares,
+
 				}));
 			});
 
@@ -670,10 +674,15 @@
 				return {};
 			}
 
-			var permissions = this.get('possiblePermissions');
-			if(!_.isUndefined(data.reshare) && !_.isUndefined(data.reshare.permissions) && data.reshare.uid_owner !== OC.currentUser) {
-				permissions = permissions & data.reshare.permissions;
+			var permissions = 0;
+			if (!_.isUndefined(data.reshares)) {
+				for (var i = 0; i < data.reshares.length; i++) {
+					if (!_.isUndefined(data.reshares[i].permissions) && data.reshares[i].uid_owner !== OC.currentUser) {
+						permissions = permissions | data.reshares[i].permissions;
+					}
+				}
 			}
+			permissions = permissions & this.get('possiblePermissions');
 
 			var allowPublicUploadStatus = false;
 			if(!_.isUndefined(data.shares)) {
@@ -754,6 +763,7 @@
 
 			return {
 				reshare: data.reshare,
+				reshares: data.reshares,
 				shares: shares,
 				linkShare: linkShare,
 				permissions: permissions,
