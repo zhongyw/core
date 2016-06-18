@@ -547,6 +547,11 @@ class FederatedShareProvider implements IShareProvider {
 		return;
 	}
 
+
+	public function getSharesInFolder($userId, $node, $reshares) {
+		return [];//TODO
+	}
+
 	/**
 	 * @inheritdoc
 	 */
