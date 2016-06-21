@@ -85,6 +85,8 @@ class File extends Node implements IFile {
 	 * @return string|null
 	 */
 	public function put($data) {
+		$timeBegin = microtime(true);
+		\OC::$server->getLogger()->debug('Sabre File::put begin ' . $this->path, array('app' => 'DEBUG'));
 		try {
 			$exists = $this->fileView->file_exists($this->path);
 			if ($this->info && $exists && !$this->info->isUpdateable()) {
@@ -229,6 +231,8 @@ class File extends Node implements IFile {
 			throw new ServiceUnavailable("Failed to check file size: " . $e->getMessage());
 		}
 
+		$timeEnd = microtime(true);
+		\OC::$server->getLogger()->debug('Sabre File::put end, total time: ' . ($timeEnd - $timeBegin) . ' seconds', array('app' => 'DEBUG'));
 		return '"' . $this->info->getEtag() . '"';
 	}
 

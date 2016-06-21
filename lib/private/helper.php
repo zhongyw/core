@@ -311,9 +311,17 @@ class OC_Helper {
 		$bufSize = 8192;
 		$result = true;
 		$count = 0;
+		\OC::$server->getLogger()->debug('streamCopy before', array('app' => 'DEBUG'));
+		$timeBegin = microtime(true);
 		while (!feof($source)) {
+			$timeBeforeRead = microtime(true);
 			$buf = fread($source, $bufSize);
+			$timeAfterRead = microtime(true);
+			\OC::$server->getLogger()->debug('streamCopy fread time: ' . ($timeAfterRead - $timeBeforeRead) . ' seconds', array('app' => 'DEBUG'));
+			$timeBeforeWrite = microtime(true);
 			$bytesWritten = fwrite($target, $buf);
+			$timeAfterWrite = microtime(true);
+			\OC::$server->getLogger()->debug('streamCopy fwrite ' . $bytesWritten . ' bytes time: ' . ($timeAfterWrite - $timeBeforeWrite) . ' seconds', array('app' => 'DEBUG'));
 			if ($bytesWritten !== false) {
 				$count += $bytesWritten;
 			}
@@ -327,6 +335,8 @@ class OC_Helper {
 				break;
 			}
 		}
+		$timeEnd = microtime(true);
+		\OC::$server->getLogger()->debug('streamCopy after, total time: ' . ($timeEnd - $timeBegin) . ' seconds', array('app' => 'DEBUG'));
 		return array($count, $result);
 	}
 
