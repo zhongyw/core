@@ -7,7 +7,7 @@
 <div id="emptycontent" class="hidden">
 	<div class="icon-external"></div>
 	<h2><?php p($l->t('No external storage configured')); ?></h2>
-	<p><?php p($l->t('You can add external storages in the personal settings')); ?></p>
+<p><?php p(print_unescaped($l->t('<a href="/index.php/settings/personal#external-storage" target="_blank" rel="noreferrer">You can add external storages in the personal settings</a>'))); ?></p>
 </div>
 
 <input type="hidden" name="dir" value="" id="dir">
