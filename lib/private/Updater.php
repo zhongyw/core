@@ -30,6 +30,11 @@
 
 namespace OC;
 
+use Doctrine\DBAL\Migrations\Configuration\Configuration;
+use Doctrine\DBAL\Migrations\Migration;
+use Doctrine\DBAL\Migrations\OutputWriter;
+use InvalidArgumentException;
+use OC\Core\Command\Db\Migrations\MigrateCommand;
 use OC\Hooks\BasicEmitter;
 use OC\IntegrityCheck\Checker;
 use OC_App;
@@ -285,7 +290,15 @@ class Updater extends BasicEmitter {
 		$this->emit('\OC\Updater', 'dbSimulateUpgradeBefore');
 
 		// simulate core DB upgrade
-		\OC_DB::simulateUpdateDbFromStructure(\OC::$SERVERROOT . '/db_structure.xml');
+		$mc = new Configuration(\OC::$server->getDatabaseConnection());
+		$mc->setMigrationsDirectory(\OC::$SERVERROOT."/core/migrations");
+		$mc->setMigrationsNamespace("OC\\Migrations");
+		$mc->setMigrationsTableName("core_migration_versions");
+		$mc->setOutputWriter(new OutputWriter(function ($message){
+			\OCP\Util::writeLog('app-installer', $message, \OCP\Util::INFO);
+		}));
+		$migration = new Migration($mc);
+		$migration->migrate();
 
 		$this->emit('\OC\Updater', 'dbSimulateUpgrade');
 	}
@@ -293,8 +306,7 @@ class Updater extends BasicEmitter {
 	protected function doCoreUpgrade() {
 		$this->emit('\OC\Updater', 'dbUpgradeBefore');
 
-		// do the real upgrade
-		\OC_DB::updateDbFromStructure(\OC::$SERVERROOT . '/db_structure.xml');
+		// there is not necessity for migration testing
 
 		$this->emit('\OC\Updater', 'dbUpgrade');
 	}

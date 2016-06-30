@@ -1180,8 +1180,21 @@ class OC_App {
 		}
 		$appData = self::getAppInfo($appId);
 		self::executeRepairSteps($appId, $appData['repair-steps']['pre-migration']);
-		if (file_exists($appPath . '/appinfo/database.xml')) {
-			OC_DB::updateDbFromStructure($appPath . '/appinfo/database.xml');
+		if (isset($appData['use-migrations']) && $appData['use-migrations'] === true) {
+			$mc = new \Doctrine\DBAL\Migrations\Configuration\Configuration(\OC::$server->getDatabaseConnection());
+			$mc->setMigrationsDirectory(\OC::$SERVERROOT."/$appPath/appinfo/migrations");
+			$mc->setMigrationsNamespace("OCA\\$appId\\Migrations");
+			$mc->setMigrationsTableName("{$appId}_migration_versions");
+			$mc->setOutputWriter(new \Doctrine\DBAL\Migrations\OutputWriter(function ($message){
+				\OCP\Util::writeLog('app-installer', $message, \OCP\Util::INFO);
+			}));
+
+			$migration = new \Doctrine\DBAL\Migrations\Migration($mc);
+			$migration->migrate();
+		} else {
+			if (file_exists($appPath . '/appinfo/database.xml')) {
+				OC_DB::updateDbFromStructure($appPath . '/appinfo/database.xml');
+			}
 		}
 		self::executeRepairSteps($appId, $appData['repair-steps']['post-migration']);
 		self::setupLiveMigrations($appId, $appData['repair-steps']['live-migration']);

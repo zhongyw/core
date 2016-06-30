@@ -39,6 +39,7 @@
 
 namespace OC;
 
+use Doctrine\DBAL\Migrations\OutputWriter;
 use OC\App\CodeChecker\CodeChecker;
 use OC\App\CodeChecker\EmptyCheck;
 use OC\App\CodeChecker\PrivateCheck;
@@ -125,11 +126,24 @@ class Installer {
 		OC_Helper::rmdirr($extractDir);
 
 		//install the database
-		if(is_file($basedir.'/appinfo/database.xml')) {
-			if (\OC::$server->getAppConfig()->getValue($info['id'], 'installed_version') === null) {
-				OC_DB::createDbFromStructure($basedir.'/appinfo/database.xml');
-			} else {
-				OC_DB::updateDbFromStructure($basedir.'/appinfo/database.xml');
+		if (isset($appData['use-migrations']) && $appData['use-migrations'] === true) {
+			$mc = new \Doctrine\DBAL\Migrations\Configuration\Configuration(\OC::$server->getDatabaseConnection());
+			$mc->setMigrationsDirectory($basedir."/appinfo/migrations");
+			$mc->setMigrationsNamespace("OCA\\$appId\\Migrations");
+			$mc->setMigrationsTableName("{$appId}_migration_versions");
+			$mc->setOutputWriter(new OutputWriter(function ($message){
+				\OCP\Util::writeLog('app-installer', $message, \OCP\Util::INFO);
+			}));
+
+			$migration = new \Doctrine\DBAL\Migrations\Migration($mc);
+			$migration->migrate();
+		} else {
+			if(is_file($basedir.'/appinfo/database.xml')) {
+				if (\OC::$server->getAppConfig()->getValue($info['id'], 'installed_version') === null) {
+					OC_DB::createDbFromStructure($basedir . '/appinfo/database.xml');
+				} else {
+					OC_DB::updateDbFromStructure($basedir . '/appinfo/database.xml');
+				}
 			}
 		}
 
