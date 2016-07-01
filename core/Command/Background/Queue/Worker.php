@@ -1,6 +1,6 @@
 <?php
 
-namespace OC\Core\Command\Background;
+namespace OC\Core\Command\Background\Queue;
 
 use OC\Console\CommandLogger;
 use OCP\ILogger;
@@ -23,7 +23,7 @@ class Worker extends Command {
 
 	protected function configure() {
 		$this
-			->setName("background:worker")
+			->setName("background:queue:worker")
 			->setDescription("Listen to the background job queue and execute the jobs")
 			->addOption('sleep', null, InputOption::VALUE_OPTIONAL, 'Number of seconds to sleep when no job is available', 3);
 	}
