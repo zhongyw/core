@@ -19,14 +19,23 @@
  *
  */
 
-namespace OCA\Files_External\Lib\Config;
+namespace OC\Files\External;
 
-use \OCA\Files_External\Lib\Backend\Backend;
+use \OCA\Files_External\Lib\MissingDependency;
 
 /**
- * Provider of external storage backends
- * @since 9.1.0
- * @deprecated use \OCP\Files\External\Config\IBackendProvider
+ * Trait for objects that have dependencies for use
  */
-interface IBackendProvider extends \OCP\Files\External\Config\IBackendProvider {
+trait DependencyTrait {
+
+	/**
+	 * Check if object is valid for use
+	 *
+	 * @return MissingDependency[] Unsatisfied dependencies
+	 */
+	public function checkDependencies() {
+		return []; // no dependencies by default
+	}
+
 }
+

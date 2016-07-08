@@ -1,6 +1,7 @@
 <?php
 /**
  * @author Robin McCorkell <robin@mccorkell.me.uk>
+ * @author Vincent Petry <pvince81@owncloud.com>
  *
  * @copyright Copyright (c) 2016, ownCloud, Inc.
  * @license AGPL-3.0
@@ -19,42 +20,20 @@
  *
  */
 
-namespace OCA\Files_External\Lib;
+namespace OCP\Files\External\Config;
 
-use \OCA\Files_External\Service\BackendService;
+use \OCA\Files_External\Lib\Auth\AuthMechanism;
 
 /**
- * Trait to implement priority mechanics for a configuration class
+ * Provider of external storage auth mechanisms
+ * @since 9.2.0
  */
-trait PriorityTrait {
-
-	/** @var int initial priority */
-	protected $priority = BackendService::PRIORITY_DEFAULT;
+interface IAuthMechanismProvider {
 
 	/**
-	 * @return int
+	 * @since 9.1.0
+	 * @return AuthMechanism[]
 	 */
-	public function getPriority() {
-		return $this->priority;
-	}
-
-	/**
-	 * @param int $priority
-	 * @return self
-	 */
-	public function setPriority($priority) {
-		$this->priority = $priority;
-		return $this;
-	}
-
-	/**
-	 * @param PriorityTrait $a
-	 * @param PriorityTrait $b
-	 * @return int
-	 */
-	public static function priorityCompare(PriorityTrait $a, PriorityTrait $b) {
-		return ($a->getPriority() - $b->getPriority());
-	}
+	public function getAuthMechanisms();
 
 }
-

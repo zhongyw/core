@@ -19,14 +19,42 @@
  *
  */
 
-namespace OCA\Files_External\Lib\Config;
+namespace OC\Files\External;
 
-use \OCA\Files_External\Lib\Backend\Backend;
+use \OCA\Files_External\Service\BackendService;
 
 /**
- * Provider of external storage backends
- * @since 9.1.0
- * @deprecated use \OCP\Files\External\Config\IBackendProvider
+ * Trait to implement priority mechanics for a configuration class
  */
-interface IBackendProvider extends \OCP\Files\External\Config\IBackendProvider {
+trait PriorityTrait {
+
+	/** @var int initial priority */
+	protected $priority = BackendService::PRIORITY_DEFAULT;
+
+	/**
+	 * @return int
+	 */
+	public function getPriority() {
+		return $this->priority;
+	}
+
+	/**
+	 * @param int $priority
+	 * @return self
+	 */
+	public function setPriority($priority) {
+		$this->priority = $priority;
+		return $this;
+	}
+
+	/**
+	 * @param PriorityTrait $a
+	 * @param PriorityTrait $b
+	 * @return int
+	 */
+	public static function priorityCompare(PriorityTrait $a, PriorityTrait $b) {
+		return ($a->getPriority() - $b->getPriority());
+	}
+
 }
+
