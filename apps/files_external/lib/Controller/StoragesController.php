@@ -34,7 +34,7 @@ use \OCP\AppFramework\Controller;
 use \OCP\AppFramework\Http;
 use OCA\Files_External\Service\StoragesService;
 use OCA\Files_External\NotFoundException;
-use OCA\Files_External\Lib\StorageConfig;
+use OCP\Files\External\IStorageConfig;
 use \OCA\Files_External\Lib\Backend\Backend;
 use \OCA\Files_External\Lib\Auth\AuthMechanism;
 use \OCP\Files\StorageNotAvailableException;
@@ -98,7 +98,7 @@ abstract class StoragesController extends Controller {
 	 * @param array|null $applicableGroups groups for which to mount the storage
 	 * @param int|null $priority priority
 	 *
-	 * @return StorageConfig|DataResponse
+	 * @return IStorageConfig|DataResponse
 	 */
 	protected function createStorage(
 		$mountPoint,
@@ -135,11 +135,11 @@ abstract class StoragesController extends Controller {
 	/**
 	 * Validate storage config
 	 *
-	 * @param StorageConfig $storage storage config
+	 * @param IStorageConfig $storage storage config
 	 *1
 	 * @return DataResponse|null returns response in case of validation error
 	 */
-	protected function validate(StorageConfig $storage) {
+	protected function validate(IStorageConfig $storage) {
 		$mountPoint = $storage->getMountPoint();
 		if ($mountPoint === '' || $mountPoint === '/') {
 			return new DataResponse(
@@ -221,7 +221,7 @@ abstract class StoragesController extends Controller {
 		return null;
 	}
 
-	protected function manipulateStorageConfig(StorageConfig $storage) {
+	protected function manipulateStorageConfig(IStorageConfig $storage) {
 		/** @var AuthMechanism */
 		$authMechanism = $storage->getAuthMechanism();
 		$authMechanism->manipulateStorageConfig($storage);
@@ -236,10 +236,10 @@ abstract class StoragesController extends Controller {
 	 * Note that this operation can be time consuming depending
 	 * on whether the remote storage is available or not.
 	 *
-	 * @param StorageConfig $storage storage configuration
+	 * @param IStorageConfig $storage storage configuration
 	 * @param bool $testOnly whether to storage should only test the connection or do more things
 	 */
-	protected function updateStorageStatus(StorageConfig &$storage, $testOnly = true) {
+	protected function updateStorageStatus(IStorageConfig &$storage, $testOnly = true) {
 		try {
 			$this->manipulateStorageConfig($storage);
 

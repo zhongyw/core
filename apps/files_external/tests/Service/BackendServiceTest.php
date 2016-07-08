@@ -96,7 +96,7 @@ class BackendServiceTest extends \Test\TestCase {
 		$backend1 = $this->getBackendMock('\Foo\Bar');
 		$backend2 = $this->getBackendMock('\Bar\Foo');
 
-		$providerMock = $this->getMock('\OCA\Files_External\Lib\Config\IBackendProvider');
+		$providerMock = $this->getMock('\OCP\Files\External\Config\IBackendProvider');
 		$providerMock->expects($this->once())
 			->method('getBackends')
 			->willReturn([$backend1, $backend2]);
@@ -114,7 +114,7 @@ class BackendServiceTest extends \Test\TestCase {
 		$backend1 = $this->getAuthMechanismMock('\Foo\Bar');
 		$backend2 = $this->getAuthMechanismMock('\Bar\Foo');
 
-		$providerMock = $this->getMock('\OCA\Files_External\Lib\Config\IAuthMechanismProvider');
+		$providerMock = $this->getMock('\OCP\Files\External\Config\IAuthMechanismProvider');
 		$providerMock->expects($this->once())
 			->method('getAuthMechanisms')
 			->willReturn([$backend1, $backend2]);
@@ -134,12 +134,12 @@ class BackendServiceTest extends \Test\TestCase {
 
 		$backend2 = $this->getBackendMock('\Dead\Beef');
 
-		$provider1Mock = $this->getMock('\OCA\Files_External\Lib\Config\IBackendProvider');
+		$provider1Mock = $this->getMock('\OCP\Files\External\Config\IBackendProvider');
 		$provider1Mock->expects($this->once())
 			->method('getBackends')
 			->willReturn([$backend1a, $backend1b]);
 		$service->registerBackendProvider($provider1Mock);
-		$provider2Mock = $this->getMock('\OCA\Files_External\Lib\Config\IBackendProvider');
+		$provider2Mock = $this->getMock('\OCP\Files\External\Config\IBackendProvider');
 		$provider2Mock->expects($this->once())
 			->method('getBackends')
 			->willReturn([$backend2]);

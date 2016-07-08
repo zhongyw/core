@@ -35,8 +35,8 @@
 use phpseclib\Crypt\AES;
 use \OCA\Files_External\AppInfo\Application;
 use \OCA\Files_External\Lib\Backend\LegacyBackend;
-use \OCA\Files_External\Lib\StorageConfig;
-use \OCA\Files_External\Lib\Backend\Backend;
+use \OCP\Files\External\IStorageConfig;
+use \OCP\Files\External\Backend\Backend;
 use \OCP\Files\StorageNotAvailableException;
 
 /**
@@ -91,7 +91,7 @@ class OC_Mount_Config {
 		$userStoragesService->setUser($user);
 
 		foreach ($userGlobalStoragesService->getStorages() as $storage) {
-			/** @var \OCA\Files_External\Lib\StorageConfig $storage */
+			/** @var IStorageConfig $storage */
 			$mountPoint = '/'.$uid.'/files'.$storage->getMountPoint();
 			$mountEntry = self::prepareMountPointEntry($storage, false);
 			foreach ($mountEntry['options'] as &$option) {
@@ -152,14 +152,14 @@ class OC_Mount_Config {
 	}
 
 	/**
-	 * Convert a StorageConfig to the legacy mountPoints array format
+	 * Convert a IStorageConfig to the legacy mountPoints array format
 	 * There's a lot of extra information in here, to satisfy all of the legacy functions
 	 *
-	 * @param StorageConfig $storage
+	 * @param IStorageConfig $storage
 	 * @param bool $isPersonal
 	 * @return array
 	 */
-	private static function prepareMountPointEntry(StorageConfig $storage, $isPersonal) {
+	private static function prepareMountPointEntry(IStorageConfig $storage, $isPersonal) {
 		$mountEntry = [];
 
 		$mountEntry['mountpoint'] = substr($storage->getMountPoint(), 1); // remove leading slash
