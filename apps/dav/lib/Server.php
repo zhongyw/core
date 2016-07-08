@@ -31,6 +31,7 @@ use OCA\DAV\Connector\Sabre\BlockLegacyClientPlugin;
 use OCA\DAV\Connector\Sabre\DavAclPlugin;
 use OCA\DAV\Connector\Sabre\DummyGetResponsePlugin;
 use OCA\DAV\Connector\Sabre\FilesPlugin;
+use OCA\DAV\DAV\PublicAuth;
 use OCA\DAV\Files\BrowserErrorPagePlugin;
 use OCA\DAV\Files\CustomPropertiesBackend;
 use OCP\IRequest;
@@ -66,7 +67,9 @@ class Server {
 		$this->server->setBaseUri($this->baseUri);
 
 		$this->server->addPlugin(new BlockLegacyClientPlugin(\OC::$server->getConfig()));
-		$authPlugin = new Plugin($authBackend, 'ownCloud');
+		$authPlugin = new Plugin();
+		$authPlugin->addBackend($authBackend);
+		$authPlugin->addBackend(new PublicAuth());
 		$this->server->addPlugin($authPlugin);
 
 		// allow setup of additional auth backends
