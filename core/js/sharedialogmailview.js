@@ -19,6 +19,7 @@
 			'<form id="emailPrivateLink" class="emailPrivateLinkForm">' +
 			'    <input id="email" class="emailField" value="{{email}}" placeholder="{{mailPrivatePlaceholder}}" type="text" />' +
 			'    <input id="emailButton" class="emailButton" type="submit" value="{{mailButtonText}}" />' +
+			'    <input id="openMailClientButton" class="emailButton" type="button" value="{{openMailClientButtonText}}"/>' +
 			'</form>' +
 			'    {{/if}}' +
 			'{{/if}}'
@@ -48,7 +49,8 @@
 		showLink: true,
 
 		events: {
-			'submit .emailPrivateLinkForm': '_onEmailPrivateLink'
+			'submit .emailPrivateLinkForm': '_onEmailPrivateLink',
+			'click #openMailClientButton': '_onClickOpenMailClientButton'
 		},
 
 		initialize: function(options) {
@@ -66,7 +68,8 @@
 
 			_.bindAll(
 				this,
-				'_onEmailPrivateLink'
+				'_onEmailPrivateLink',
+				'_onClickOpenMailClientButton'
 			);
 		},
 
@@ -98,6 +101,13 @@
 			return false;
 		},
 
+		_onClickOpenMailClientButton: function (event) {
+			event.preventDefault();
+			var emailBody = this.model.get('linkShare').link;
+			window.open("mailto:?subject=&body="+emailBody);
+			return false;
+		},
+
 		render: function() {
 			var linkShareTemplate = this.template();
 			var resharingAllowed = this.model.sharePermissionPossible();
@@ -124,6 +134,7 @@
 				mailPublicNotificationEnabled: isLinkShare && this.configModel.isMailPublicNotificationEnabled(),
 				mailPrivatePlaceholder: t('core', 'Email link to person'),
 				mailButtonText: t('core', 'Send link via email'),
+				openMailClientButtonText: t('core', 'Open email client to send link'),
 				email: email
 			}));
 
