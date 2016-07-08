@@ -19,12 +19,20 @@
  *
  */
 
-namespace OCA\Files_External\Lib\Auth;
+namespace OCP\Files\External\Auth\IUserProvided;
+
+use OCP\IUser;
 
 /**
  * For auth mechanisms where the user needs to provide credentials
  *
- * @deprecated use \OCP\Files\External\Auth\IUserProvided instead
+ * @since 9.2.0
  */
-interface IUserProvided extends \OCP\Files\External\Auth\IUserProvided {
+interface IUserProvided {
+	/**
+	 * @param IUser $user the user for which to save the user provided options
+	 * @param int $mountId the mount id to save the options for
+	 * @param array $options the user provided options
+	 */
+	public function saveBackendOptions(IUser $user, $mountId, array $options);
 }
