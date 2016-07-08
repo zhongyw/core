@@ -241,4 +241,11 @@ abstract class LockingProvider extends TestCase {
 		$this->instance->acquireLock('foo', ILockingProvider::LOCK_SHARED);
 		$this->instance->changeLock('foo', ILockingProvider::LOCK_SHARED);
 	}
+
+	/**
+	 * @expectedException \InvalidArgumentException
+	*/
+	public function testTooLongLockName() {
+	   $this->instance->acquireLock(str_repeat("x",255), ILockingProvider::LOCK_EXCLUSIVE);
+	}
 }
