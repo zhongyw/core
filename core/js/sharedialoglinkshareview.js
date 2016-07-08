@@ -22,8 +22,11 @@
 			'<input type="checkbox" name="linkCheckbox" id="linkCheckbox-{{cid}}" class="checkbox linkCheckbox" value="1" {{#if isLinkShare}}checked="checked"{{/if}} />' +
 			'<label for="linkCheckbox-{{cid}}">{{linkShareLabel}}</label>' +
 			'<br />' +
+			'<div class="oneline">' +
 			'<label for="linkText-{{cid}}" class="hidden-visually">{{urlLabel}}</label>' +
 			'<input id="linkText-{{cid}}" class="linkText {{#unless isLinkShare}}hidden{{/unless}}" type="text" readonly="readonly" value="{{shareLinkURL}}" />' +
+			'<a class="{{#unless isLinkShare}}hidden-visually{{/unless}} clipboardButton icon icon-clippy" data-clipboard-target="#linkText-{{cid}}"></a>' +
+			'</div>' +
 			'    {{#if publicUpload}}' +
 			'<div id="allowPublicUploadWrapper">' +
 			'    <span class="icon-loading-small hidden"></span>' +
@@ -112,6 +115,17 @@
 				'onShowPasswordClick',
 				'onAllowPublicUploadChange'
 			);
+
+			var clipboard = new Clipboard('.clipboardButton');
+			clipboard.on('success', function(e) {
+				$input = $(e.trigger);
+				$input.tooltip({placement: 'bottom', trigger: 'manual', title: t('core', 'Copied!')});
+				$input.tooltip('show');
+				_.delay(function() {
+					$input.tooltip('hide');
+				}, 3000);
+			});
+
 		},
 
 		onLinkCheckBoxChange: function() {
