@@ -83,6 +83,7 @@ use OCP\IServerContainer;
 use OCP\Security\IContentSecurityPolicyManager;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use OC\Files\External\StoragesBackendService;
 
 /**
  * Class Server
@@ -657,6 +658,9 @@ class Server extends ServerContainer implements IServerContainer {
 		});
 		$this->registerService('ContentSecurityPolicyManager', function (Server $c) {
 			return new ContentSecurityPolicyManager();
+		});
+		$this->registerService('StoragesBackendService', function (Server $c) {
+			return new StoragesBackendService($c->query('AllConfig'));
 		});
 		$this->registerService('ShareManager', function(Server $c) {
 			$config = $c->getConfig();
@@ -1319,10 +1323,10 @@ class Server extends ServerContainer implements IServerContainer {
 	/**
 	 * Not a public API as of 8.2, wait for 9.0
 	 *
-	 * @return \OCA\Files_External\Service\BackendService
+	 * @return \OCP\Files\External\IStoragesBackendService
 	 */
 	public function getStoragesBackendService() {
-		return \OC_Mount_Config::$app->getContainer()->query('OCA\\Files_External\\Service\\BackendService');
+		return $this->query('StoragesBackendService');
 	}
 
 	/**

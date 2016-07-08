@@ -41,7 +41,7 @@ $app = \OC_Mount_Config::$app;
 $globalStorageService = $app->getContainer()->query('\OCA\Files_External\Service\GlobalStoragesService');
 $userStorageService = $app->getContainer()->query('\OCA\Files_External\Service\UserStoragesService');
 $importLegacyStorageService = $app->getContainer()->query('\OCA\Files_External\Service\ImportLegacyStoragesService');
-$backendService = $app->getContainer()->query('OCA\Files_External\Service\BackendService');
+$backendService = OC::$server->getStoragesBackendService();
 
 /** @var Symfony\Component\Console\Application $application */
 $application->add(new ListCommand($globalStorageService, $userStorageService, $userSession, $userManager));
