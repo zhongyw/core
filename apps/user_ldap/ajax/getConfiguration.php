@@ -2,11 +2,11 @@
 /**
  * @author Arthur Schiwon <blizzz@arthur-schiwon.de>
  * @author Christopher Schäpers <kondou@ts.unde.re>
- * @author Joas Schilling <nickvergessen@owncloud.com>
+ * @author Joas Schilling <coding@schilljs.com>
  * @author Lukas Reschke <lukas@statuscode.ch>
  * @author Morris Jobke <hey@morrisjobke.de>
  *
- * @copyright Copyright (c) 2016, ownCloud, Inc.
+ * @copyright Copyright (c) 2016, ownCloud GmbH.
  * @license AGPL-3.0
  *
  * This code is free software: you can redistribute it and/or modify
@@ -31,4 +31,9 @@ OCP\JSON::callCheck();
 $prefix = (string)$_POST['ldap_serverconfig_chooser'];
 $ldapWrapper = new OCA\User_LDAP\LDAP();
 $connection = new \OCA\User_LDAP\Connection($ldapWrapper, $prefix);
-OCP\JSON::success(array('configuration' => $connection->getConfiguration()));
+$configuration = $connection->getConfiguration();
+if (isset($configuration['ldap_agent_password']) && $configuration['ldap_agent_password'] !== '') {
+	// hide password
+	$configuration['ldap_agent_password'] = '**PASSWORD SET**';
+}
+OCP\JSON::success(array('configuration' => $configuration));

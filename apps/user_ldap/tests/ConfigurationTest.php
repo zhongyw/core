@@ -1,9 +1,9 @@
 <?php
 /**
  * @author Arthur Schiwon <blizzz@arthur-schiwon.de>
- * @author Joas Schilling <nickvergessen@owncloud.com>
+ * @author Joas Schilling <coding@schilljs.com>
  *
- * @copyright Copyright (c) 2016, ownCloud, Inc.
+ * @copyright Copyright (c) 2016, ownCloud GmbH.
  * @license AGPL-3.0
  *
  * This code is free software: you can redistribute it and/or modify
@@ -91,14 +91,6 @@ class ConfigurationTest extends \Test\TestCase {
 	 */
 	public function testSetValue($key, $input, $expected) {
 		$configuration = new \OCA\User_LDAP\Configuration('t01', false);
-
-		$settingsInput = array(
-			'ldapBaseUsers' => array(
-				'cn=someUsers,dc=example,dc=org',
-				'  ',
-				' cn=moreUsers,dc=example,dc=org '
-			)
-		);
 
 		$configuration->setConfiguration([$key => $input]);
 		$this->assertSame($configuration->$key, $expected);

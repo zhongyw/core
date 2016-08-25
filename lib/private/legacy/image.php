@@ -1,14 +1,14 @@
 <?php
 /**
  * @author Andreas Fischer <bantu@owncloud.com>
- * @author Bart Visscher <bartv@thisnet.nl>
  * @author Bartek Przybylski <bart.p.pl@gmail.com>
+ * @author Bart Visscher <bartv@thisnet.nl>
  * @author Björn Schießle <bjoern@schiessle.org>
  * @author Byron Marohn <combustible@live.com>
  * @author Christopher Schäpers <kondou@ts.unde.re>
  * @author Georg Ehrke <georg@owncloud.com>
  * @author j-ed <juergen@eisfair.org>
- * @author Joas Schilling <nickvergessen@owncloud.com>
+ * @author Joas Schilling <coding@schilljs.com>
  * @author Johannes Willnecker <johannes@willnecker.com>
  * @author Jörn Friedrich Dreyer <jfd@butonic.de>
  * @author Lukas Reschke <lukas@statuscode.ch>
@@ -18,7 +18,7 @@
  * @author Thomas Müller <thomas.mueller@tmit.eu>
  * @author Thomas Tanghus <thomas@tanghus.net>
  *
- * @copyright Copyright (c) 2016, ownCloud, Inc.
+ * @copyright Copyright (c) 2016, ownCloud GmbH.
  * @license AGPL-3.0
  *
  * This code is free software: you can redistribute it and/or modify
@@ -81,11 +81,6 @@ class OC_Image implements \OCP\IImage {
 		$this->logger = $logger;
 		if (is_null($logger)) {
 			$this->logger = \OC::$server->getLogger();
-		}
-
-		if (!extension_loaded('gd') || !function_exists('gd_info')) {
-			$this->logger->error(__METHOD__ . '(): GD module not installed', array('app' => 'core'));
-			return false;
 		}
 
 		if (\OC_Util::fileInfoLoaded()) {
@@ -801,8 +796,8 @@ class OC_Image implements \OCP\IImage {
 			$this->logger->error(__METHOD__ . '(): No image loaded', array('app' => 'core'));
 			return false;
 		}
-		$widthOrig = imageSX($this->resource);
-		$heightOrig = imageSY($this->resource);
+		$widthOrig = imagesx($this->resource);
+		$heightOrig = imagesy($this->resource);
 		$ratioOrig = $widthOrig / $heightOrig;
 
 		if ($ratioOrig > 1) {
@@ -827,8 +822,8 @@ class OC_Image implements \OCP\IImage {
 			$this->logger->error(__METHOD__ . '(): No image loaded', array('app' => 'core'));
 			return false;
 		}
-		$widthOrig = imageSX($this->resource);
-		$heightOrig = imageSY($this->resource);
+		$widthOrig = imagesx($this->resource);
+		$heightOrig = imagesy($this->resource);
 		$process = imagecreatetruecolor($width, $height);
 
 		if ($process == false) {
@@ -866,8 +861,8 @@ class OC_Image implements \OCP\IImage {
 			$this->logger->error('OC_Image->centerCrop, No image loaded', array('app' => 'core'));
 			return false;
 		}
-		$widthOrig = imageSX($this->resource);
-		$heightOrig = imageSY($this->resource);
+		$widthOrig = imagesx($this->resource);
+		$heightOrig = imagesy($this->resource);
 		if ($widthOrig === $heightOrig and $size == 0) {
 			return true;
 		}
@@ -966,8 +961,8 @@ class OC_Image implements \OCP\IImage {
 			$this->logger->error(__METHOD__ . '(): No image loaded', array('app' => 'core'));
 			return false;
 		}
-		$widthOrig = imageSX($this->resource);
-		$heightOrig = imageSY($this->resource);
+		$widthOrig = imagesx($this->resource);
+		$heightOrig = imagesy($this->resource);
 		$ratio = $widthOrig / $heightOrig;
 
 		$newWidth = min($maxWidth, $ratio * $maxHeight);
@@ -989,8 +984,8 @@ class OC_Image implements \OCP\IImage {
 			$this->logger->error(__METHOD__ . '(): No image loaded', array('app' => 'core'));
 			return false;
 		}
-		$widthOrig = imageSX($this->resource);
-		$heightOrig = imageSY($this->resource);
+		$widthOrig = imagesx($this->resource);
+		$heightOrig = imagesy($this->resource);
 
 		if ($widthOrig > $maxWidth || $heightOrig > $maxHeight) {
 			return $this->fitIn($maxWidth, $maxHeight);
@@ -1023,6 +1018,7 @@ if (!function_exists('imagebmp')) {
 	 * @link http://www.programmierer-forum.de/imagebmp-gute-funktion-gefunden-t143716.htm
 	 * @author mgutt <marc@gutt.it>
 	 * @version 1.00
+	 * @param resource $im
 	 * @param string $fileName [optional] <p>The path to save the file to.</p>
 	 * @param int $bit [optional] <p>Bit depth, (default is 24).</p>
 	 * @param int $compression [optional]

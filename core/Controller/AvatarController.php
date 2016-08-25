@@ -1,6 +1,6 @@
 <?php
 /**
- * @author Joas Schilling <nickvergessen@owncloud.com>
+ * @author Joas Schilling <coding@schilljs.com>
  * @author Lukas Reschke <lukas@statuscode.ch>
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Robin Appelman <icewind@owncloud.com>
@@ -8,7 +8,7 @@
  * @author Thomas Müller <thomas.mueller@tmit.eu>
  * @author Vincent Petry <pvince81@owncloud.com>
  *
- * @copyright Copyright (c) 2016, ownCloud, Inc.
+ * @copyright Copyright (c) 2016, ownCloud GmbH.
  * @license AGPL-3.0
  *
  * This code is free software: you can redistribute it and/or modify
@@ -174,7 +174,7 @@ class AvatarController extends Controller {
 		} elseif (!is_null($files)) {
 			if (
 				$files['error'][0] === 0 &&
-				 is_uploaded_file($files['tmp_name'][0]) &&
+				$this->isUploadFile($files['tmp_name'][0]) &&
 				!\OC\Files\Filesystem::isFileBlacklisted($files['tmp_name'][0])
 			) {
 				if ($files['size'][0] > 20*1024*1024) {
@@ -323,5 +323,13 @@ class AvatarController extends Controller {
 			$this->logger->logException($e, ['app' => 'core']);
 			return new DataResponse(['data' => ['message' => $this->l->t('An error occurred. Please contact your admin.')]], Http::STATUS_BAD_REQUEST);
 		}
+	}
+
+	/**
+	 * @param string $file
+	 * @return bool
+	 */
+	protected function isUploadFile($file) {
+		return is_uploaded_file($file);
 	}
 }

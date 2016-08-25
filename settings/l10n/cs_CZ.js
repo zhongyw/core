@@ -2,6 +2,7 @@ OC.L10N.register(
     "settings",
     {
     "Wrong password" : "Nesprávné heslo",
+    "The new password can not be the same as the previous one" : "Nové heslo nemůže být stejné jako to předchozí",
     "No user supplied" : "Nebyl uveden uživatel",
     "Authentication error" : "Chyba přihlášení",
     "Please provide an admin recovery password, otherwise all user data will be lost" : "Zadejte prosím administrátorské heslo pro obnovu, jinak budou všechna data ztracena",
@@ -112,6 +113,7 @@ OC.L10N.register(
     "add group" : "přidat skupinu",
     "Invalid quota value \"{val}\"" : "Neplatná hodnota kvóty \"{val}\"",
     "Changing the password will result in data loss, because data recovery is not available for this user" : "Změna hesla bude mít za následek ztrátu dat, protože jejich obnova není pro tohoto uživatele dostupná.",
+    "Password successfully changed" : "Heslo bylo úspěšně změněno",
     "A valid username must be provided" : "Musíte zadat platné uživatelské jméno",
     "Error creating user: {message}" : "Chyba vytvoření uživatele: {message}",
     "A valid password must be provided" : "Musíte zadat platné heslo",

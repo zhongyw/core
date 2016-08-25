@@ -1,10 +1,10 @@
 <?php
 /**
  * @author Arthur Schiwon <blizzz@arthur-schiwon.de>
- * @author Joas Schilling <nickvergessen@owncloud.com>
+ * @author Joas Schilling <coding@schilljs.com>
  * @author Vincent Petry <pvince81@owncloud.com>
  *
- * @copyright Copyright (c) 2016, ownCloud, Inc.
+ * @copyright Copyright (c) 2016, ownCloud GmbH.
  * @license AGPL-3.0
  *
  * This code is free software: you can redistribute it and/or modify
@@ -26,7 +26,6 @@ namespace OCA\DAV\Tests\unit\Comments;
 use OC\Comments\Comment;
 use OCA\DAV\Comments\CommentsPlugin as CommentsPluginImplementation;
 use OCP\Comments\IComment;
-use Sabre\DAV\Exception\NotFound;
 
 class CommentsPluginTest extends \Test\TestCase {
 	/** @var \Sabre\DAV\Server */

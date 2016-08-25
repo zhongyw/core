@@ -2,7 +2,7 @@
 /**
  * @author Bart Visscher <bartv@thisnet.nl>
  * @author Bernhard Posselt <dev@bernhard-posselt.com>
- * @author Joas Schilling <nickvergessen@owncloud.com>
+ * @author Joas Schilling <coding@schilljs.com>
  * @author Lukas Reschke <lukas@statuscode.ch>
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Olivier Paroz <github@oparoz.com>
@@ -11,7 +11,7 @@
  * @author Thomas Müller <thomas.mueller@tmit.eu>
  * @author Victor Dubiniuk <dubiniuk@owncloud.com>
  *
- * @copyright Copyright (c) 2016, ownCloud, Inc.
+ * @copyright Copyright (c) 2016, ownCloud GmbH.
  * @license AGPL-3.0
  *
  * This code is free software: you can redistribute it and/or modify
@@ -66,6 +66,7 @@ class Log implements ILogger {
 		'checkPassword',
 		'updatePrivateKeyPassword',
 		'validateUserPass',
+		'loginWithPassword',
 
 		// TokenProvider
 		'getToken',
@@ -84,6 +85,9 @@ class Log implements ILogger {
 		'calculateHMAC',
 		'encrypt',
 		'decrypt',
+
+		//LoginController
+		'tryLogin'
 	];
 
 	/**
@@ -304,14 +308,14 @@ class Log implements ILogger {
 	 * @since 8.2.0
 	 */
 	public function logException($exception, array $context = array()) {
-		$exception = array(
+		$exception = [
 			'Exception' => get_class($exception),
 			'Message' => $exception->getMessage(),
 			'Code' => $exception->getCode(),
 			'Trace' => $exception->getTraceAsString(),
 			'File' => $exception->getFile(),
 			'Line' => $exception->getLine(),
-		);
+		];
 		$exception['Trace'] = preg_replace('!(' . implode('|', $this->methodsWithSensitiveParameters) . ')\(.*\)!', '$1(*** sensitive parameters replaced ***)', $exception['Trace']);
 		$msg = isset($context['message']) ? $context['message'] : 'Exception';
 		$msg .= ': ' . json_encode($exception);

@@ -2,7 +2,7 @@
 /**
  * @author Robin Appelman <icewind@owncloud.com>
  *
- * @copyright Copyright (c) 2016, ownCloud, Inc.
+ * @copyright Copyright (c) 2016, ownCloud GmbH.
  * @license AGPL-3.0
  *
  * This code is free software: you can redistribute it and/or modify
@@ -47,11 +47,15 @@ class LazyStorageMountInfo extends CachedMountInfo {
 	 */
 	public function getStorageId() {
 		if (!$this->storageId) {
-			$storage = $this->mount->getStorage();
-			if (!$storage) {
-				return -1;
+			if (method_exists($this->mount, 'getStorageNumericId')) {
+				$this->storageId = $this->mount->getStorageNumericId();
+			} else {
+				$storage = $this->mount->getStorage();
+				if (!$storage) {
+					return -1;
+				}
+				$this->storageId = $storage->getStorageCache()->getNumericId();
 			}
-			$this->storageId = $storage->getStorageCache()->getNumericId();
 		}
 		return parent::getStorageId();
 	}

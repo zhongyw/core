@@ -2,6 +2,7 @@ OC.L10N.register(
     "settings",
     {
     "Wrong password" : "Väärä salasana",
+    "The new password can not be the same as the previous one" : "Uusi salasana ei voi sama kuin aiempi salasana",
     "No user supplied" : "Käyttäjää ei määritetty",
     "Authentication error" : "Tunnistautumisvirhe",
     "Please provide an admin recovery password, otherwise all user data will be lost" : "Anna ylläpitäjän palautussalasana, muuten kaikki käyttäjien data menetetään",
@@ -108,6 +109,7 @@ OC.L10N.register(
     "add group" : "lisää ryhmä",
     "Invalid quota value \"{val}\"" : "Virheellinen kiintiöarvo \"{val}\"",
     "Changing the password will result in data loss, because data recovery is not available for this user" : "Salasanan muuttaminen johtaa tietojen häviämiseen, koska tietojen palautusta ei ole käytettävissä tämän käyttäjän kohdalla",
+    "Password successfully changed" : "Salasana muutettu onnistuneesti",
     "A valid username must be provided" : "Anna kelvollinen käyttäjätunnus",
     "Error creating user: {message}" : "Virhe käyttäjää luotaessa: {message}",
     "A valid password must be provided" : "Anna kelvollinen salasana",

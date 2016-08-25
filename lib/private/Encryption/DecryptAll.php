@@ -1,8 +1,11 @@
 <?php
 /**
  * @author Björn Schießle <bjoern@schiessle.org>
+ * @author Christian Jürges <christian@eqipe.ch>
+ * @author Joas Schilling <coding@schilljs.com>
+ * @author Vincent Petry <pvince81@owncloud.com>
  *
- * @copyright Copyright (c) 2016, ownCloud, Inc.
+ * @copyright Copyright (c) 2016, ownCloud GmbH.
  * @license AGPL-3.0
  *
  * This code is free software: you can redistribute it and/or modify
@@ -206,6 +209,10 @@ class DecryptAll {
 		while ($root = array_pop($directories)) {
 			$content = $this->rootView->getDirectoryContent($root);
 			foreach ($content as $file) {
+				// only decrypt files owned by the user
+				if($file->getStorage()->instanceOfStorage('OC\Files\Storage\Shared')) {
+						continue;
+				}
 				$path = $root . '/' . $file['name'];
 				if ($this->rootView->is_dir($path)) {
 					$directories[] = $path;

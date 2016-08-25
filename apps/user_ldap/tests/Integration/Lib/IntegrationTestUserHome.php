@@ -1,9 +1,9 @@
 <?php
 /**
  * @author Arthur Schiwon <blizzz@arthur-schiwon.de>
- * @author Joas Schilling <nickvergessen@owncloud.com>
+ * @author Joas Schilling <coding@schilljs.com>
  *
- * @copyright Copyright (c) 2016, ownCloud, Inc.
+ * @copyright Copyright (c) 2016, ownCloud GmbH.
  * @license AGPL-3.0
  *
  * This code is free software: you can redistribute it and/or modify
@@ -110,7 +110,7 @@ class IntegrationTestUserHome extends AbstractIntegrationTest {
 	 */
 	protected function case2() {
 		\OC::$server->getConfig()->setAppValue('user_ldap', 'enforce_home_folder_naming_rule', true);
-		$userManager = \oc::$server->getUserManager();
+		$userManager = \OC::$server->getUserManager();
 		// clearing backends is critical, otherwise the userManager will have
 		// the user objects cached and the value from case1 returned
 		$userManager->clearBackends();
@@ -143,7 +143,7 @@ class IntegrationTestUserHome extends AbstractIntegrationTest {
 		$this->connection->setConfiguration([
 			'homeFolderNamingRule' => 'attr:',
 		]);
-		$userManager = \oc::$server->getUserManager();
+		$userManager = \OC::$server->getUserManager();
 		$userManager->clearBackends();
 		$userManager->registerBackend($this->backend);
 		$users = $userManager->search('', 5, 0);

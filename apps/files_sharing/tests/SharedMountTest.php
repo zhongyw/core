@@ -1,14 +1,14 @@
 <?php
 /**
  * @author Björn Schießle <bjoern@schiessle.org>
- * @author Joas Schilling <nickvergessen@owncloud.com>
+ * @author Joas Schilling <coding@schilljs.com>
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Robin Appelman <icewind@owncloud.com>
  * @author Roeland Jago Douma <rullzer@owncloud.com>
  * @author Thomas Müller <thomas.mueller@tmit.eu>
  * @author Vincent Petry <pvince81@owncloud.com>
  *
- * @copyright Copyright (c) 2016, ownCloud, Inc.
+ * @copyright Copyright (c) 2016, ownCloud GmbH.
  * @license AGPL-3.0
  *
  * This code is free software: you can redistribute it and/or modify
@@ -242,62 +242,27 @@ class SharedMountTest extends TestCase {
 	}
 
 	public function dataPermissionMovedGroupShare() {
-		$data = [];
-
-		$powerset = function($permissions) {
-			$results = [\OCP\Constants::PERMISSION_READ];
-
-			foreach ($permissions as $permission) {
-				foreach ($results as $combination) {
-					$results[] = $permission | $combination;
-				}
-			}
-			return $results;
-		};
-
-		//Generate file permissions
-		$permissions = [
-			\OCP\Constants::PERMISSION_UPDATE,
-			\OCP\Constants::PERMISSION_SHARE,
+		return [
+			[
+				'file',
+				\OCP\Constants::PERMISSION_READ
+				| \OCP\Constants::PERMISSION_UPDATE
+				| \OCP\Constants::PERMISSION_SHARE,
+				\OCP\Constants::PERMISSION_READ
+				| \OCP\Constants::PERMISSION_SHARE,
+			],
+			[
+				'folder',
+				\OCP\Constants::PERMISSION_READ
+				| \OCP\Constants::PERMISSION_CREATE
+				| \OCP\Constants::PERMISSION_UPDATE
+				| \OCP\Constants::PERMISSION_DELETE
+				| \OCP\Constants::PERMISSION_SHARE,
+				\OCP\Constants::PERMISSION_READ
+				| \OCP\Constants::PERMISSION_CREATE
+				| \OCP\Constants::PERMISSION_UPDATE,
+			],
 		];
-
-		$allPermissions = $powerset($permissions);
-
-		foreach ($allPermissions as $before) {
-			foreach ($allPermissions as $after) {
-				if ($before === $after) { continue; }
-
-				$data[] = [
-					'file', 
-					$before,
-					$after,
-				];
-			}
-		}
-
-		//Generate folder permissions
-		$permissions = [
-			\OCP\Constants::PERMISSION_UPDATE,
-			\OCP\Constants::PERMISSION_CREATE,
-			\OCP\Constants::PERMISSION_SHARE,
-			\OCP\Constants::PERMISSION_DELETE,
-		];
-
-		$allPermissions = $powerset($permissions);
-
-		foreach ($allPermissions as $before) {
-			foreach ($allPermissions as $after) {
-				if ($before === $after) { continue; }
-
-				$data[] = [
-					'folder',
-					$before,
-					$after,
-				];
-			}
-		}
-
-		return $data;
 	}
 
 

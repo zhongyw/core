@@ -1,10 +1,10 @@
 <?php
 /**
- * @author Joas Schilling <nickvergessen@owncloud.com>
+ * @author Joas Schilling <coding@schilljs.com>
  * @author Robin Appelman <icewind@owncloud.com>
  * @author Robin McCorkell <robin@mccorkell.me.uk>
  *
- * @copyright Copyright (c) 2016, ownCloud, Inc.
+ * @copyright Copyright (c) 2016, ownCloud GmbH.
  * @license AGPL-3.0
  *
  * This code is free software: you can redistribute it and/or modify
@@ -207,7 +207,7 @@ class DBConfigService {
 				'type' => $builder->createNamedParameter($type, IQueryBuilder::PARAM_INT)
 			]);
 		$query->execute();
-		return (int)$this->connection->lastInsertId('external_mounts');
+		return (int)$this->connection->lastInsertId('*PREFIX*external_mounts');
 	}
 
 	/**

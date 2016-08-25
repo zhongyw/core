@@ -2,7 +2,7 @@
 /**
  * @author Robin Appelman <icewind@owncloud.com>
  *
- * @copyright Copyright (c) 2016, ownCloud, Inc.
+ * @copyright Copyright (c) 2016, ownCloud GmbH.
  * @license AGPL-3.0
  *
  * This code is free software: you can redistribute it and/or modify
@@ -68,6 +68,9 @@ class MemcacheLockingProvider extends AbstractLockingProvider {
 	 * @throws \OCP\Lock\LockedException
 	 */
 	public function acquireLock($path, $type) {
+		if (strlen($path) > 64) { // max length in file_locks
+			throw new \InvalidArgumentException("Lock key length too long");
+		}
 		if ($type === self::LOCK_SHARED) {
 			if (!$this->memcache->inc($path)) {
 				throw new LockedException($path);

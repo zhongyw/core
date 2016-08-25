@@ -8,7 +8,7 @@
  * @author fabian <fabian@web2.0-apps.de>
  * @author Georg Ehrke <georg@owncloud.com>
  * @author Jakob Sack <mail@jakobsack.de>
- * @author Joas Schilling <nickvergessen@owncloud.com>
+ * @author Joas Schilling <coding@schilljs.com>
  * @author Jörn Friedrich Dreyer <jfd@butonic.de>
  * @author Lukas Reschke <lukas@statuscode.ch>
  * @author Michael Gapczynski <GapczynskiM@gmail.com>
@@ -19,7 +19,7 @@
  * @author Roeland Jago Douma <rullzer@owncloud.com>
  * @author Thomas Müller <thomas.mueller@tmit.eu>
  *
- * @copyright Copyright (c) 2016, ownCloud, Inc.
+ * @copyright Copyright (c) 2016, ownCloud GmbH.
  * @license AGPL-3.0
  *
  * This code is free software: you can redistribute it and/or modify
@@ -51,11 +51,13 @@
 namespace OC\User;
 
 use OC\Cache\CappedMemoryCache;
+use OCP\IUserBackend;
+use OCP\Util;
 
 /**
  * Class for user management in a SQL Database (e.g. MySQL, SQLite)
  */
-class Database extends \OC\User\Backend implements \OCP\IUserBackend {
+class Database extends Backend implements IUserBackend {
 	/** @var CappedMemoryCache */
 	private $cache;
 
@@ -223,7 +225,7 @@ class Database extends \OC\User\Backend implements \OCP\IUserBackend {
 			$result = $query->execute(array($uid));
 
 			if ($result === false) {
-				\OCP\Util::writeLog('core', \OC_DB::getErrorMessage(), \OCP\Util::ERROR);
+				Util::writeLog('core', \OC_DB::getErrorMessage(), Util::ERROR);
 				return false;
 			}
 
@@ -300,7 +302,7 @@ class Database extends \OC\User\Backend implements \OCP\IUserBackend {
 		$query = \OC_DB::prepare('SELECT COUNT(*) FROM `*PREFIX*users`');
 		$result = $query->execute();
 		if ($result === false) {
-			\OCP\Util::writeLog('core', \OC_DB::getErrorMessage(), \OCP\Util::ERROR);
+			Util::writeLog('core', \OC_DB::getErrorMessage(), Util::ERROR);
 			return false;
 		}
 		return $result->fetchOne();
@@ -335,7 +337,7 @@ class Database extends \OC\User\Backend implements \OCP\IUserBackend {
 
 		$backends = \OC::$server->getUserManager()->getBackends();
 		foreach ($backends as $backend) {
-			if ($backend instanceof \OC\User\Database) {
+			if ($backend instanceof Database) {
 				/** @var \OC\User\Database $backend */
 				$uid = $backend->loginName2UserName($param['uid']);
 				if ($uid !== false) {

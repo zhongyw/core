@@ -2,7 +2,7 @@
 /**
  * @author Roeland Jago Douma <rullzer@owncloud.com>
  *
- * @copyright Copyright (c) 2016, ownCloud, Inc.
+ * @copyright Copyright (c) 2016, ownCloud GmbH.
  * @license AGPL-3.0
  *
  * This code is free software: you can redistribute it and/or modify
@@ -21,11 +21,13 @@
 
 namespace OC\User;
 
+use \OCP\UserInterface;
+
 /**
  * Abstract base class for user management. Provides methods for querying backend
  * capabilities.
  */
-abstract class Backend implements \OCP\UserInterface {
+abstract class Backend implements UserInterface {
 	/**
 	 * error code for functions not provided by the user backend
 	 */

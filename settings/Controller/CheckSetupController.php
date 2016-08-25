@@ -1,12 +1,12 @@
 <?php
 /**
- * @author Joas Schilling <nickvergessen@owncloud.com>
+ * @author Joas Schilling <coding@schilljs.com>
  * @author Lukas Reschke <lukas@statuscode.ch>
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Robin McCorkell <robin@mccorkell.me.uk>
  * @author Roeland Jago Douma <rullzer@owncloud.com>
  *
- * @copyright Copyright (c) 2016, ownCloud, Inc.
+ * @copyright Copyright (c) 2016, ownCloud GmbH.
  * @license AGPL-3.0
  *
  * This code is free software: you can redistribute it and/or modify
@@ -212,12 +212,7 @@ class CheckSetupController extends Controller {
 	 * @return array
 	 */
 	private function isPhpSupported() {
-		$eol = false;
-
-		//PHP 5.4 is EOL on 14 Sep 2015
-		if (version_compare(PHP_VERSION, '5.5.0') === -1) {
-			$eol = true;
-		}
+		$eol = $this->isEndOfLive();
 
 		return ['eol' => $eol, 'version' => PHP_VERSION];
 	}
@@ -346,5 +341,19 @@ Raw output
 				'codeIntegrityCheckerDocumentation' => $this->urlGenerator->linkToDocs('admin-code-integrity'),
 			]
 		);
+	}
+
+	/**
+	 * @return bool
+	 */
+	protected function isEndOfLive() {
+		$eol = false;
+
+		//PHP 5.4 is EOL on 14 Sep 2015
+		if (version_compare(PHP_VERSION, '5.5.0') === -1) {
+			$eol = true;
+			return $eol;
+		}
+		return $eol;
 	}
 }

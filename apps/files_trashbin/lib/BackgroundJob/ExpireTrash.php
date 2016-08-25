@@ -1,10 +1,10 @@
 <?php
 /**
- * @author Joas Schilling <nickvergessen@owncloud.com>
+ * @author Joas Schilling <coding@schilljs.com>
  * @author Lukas Reschke <lukas@statuscode.ch>
  * @author Victor Dubiniuk <dubiniuk@owncloud.com>
  *
- * @copyright Copyright (c) 2016, ownCloud, Inc.
+ * @copyright Copyright (c) 2016, ownCloud GmbH.
  * @license AGPL-3.0
  *
  * This code is free software: you can redistribute it and/or modify
@@ -78,7 +78,7 @@ class ExpireTrash extends \OC\BackgroundJob\TimedJob {
 
 		$this->userManager->callForAllUsers(function(IUser $user) {
 			$uid = $user->getUID();
-			if (!$this->setupFS($uid)) {
+			if ($user->getLastLogin() === 0 || !$this->setupFS($uid)) {
 				return;
 			}
 			$dirContent = Helper::getTrashFiles('/', $uid, 'mtime');

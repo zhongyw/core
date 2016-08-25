@@ -194,6 +194,7 @@
 		 * @param options.folderDropOptions folder drop options, disabled by default
 		 * @param options.scrollTo name of file to scroll to after the first load
 		 * @param {OC.Files.Client} [options.filesClient] files API client
+		 * @param {OC.Backbone.Model} [options.filesConfig] files app configuration
 		 * @private
 		 */
 		initialize: function($el, options) {
@@ -207,11 +208,9 @@
 				this._filesConfig = options.config;
 			} else if (!_.isUndefined(OCA.Files) && !_.isUndefined(OCA.Files.App)) {
 				this._filesConfig = OCA.Files.App.getFilesConfig();
-			}
-
-			if (!_.isUndefined(this._filesConfig)) {
-				this._filesConfig.on('change:showhidden', function() {
-					self.setFiles(self.files);
+			} else {
+				this._filesConfig = new OC.Backbone.Model({
+					'showhidden': false
 				});
 			}
 
@@ -236,6 +235,22 @@
 			this.$table = $el.find('table:first');
 			this.$fileList = $el.find('#fileList');
 
+			if (!_.isUndefined(this._filesConfig)) {
+				this._filesConfig.on('change:showhidden', function() {
+					var showHidden = this.get('showhidden');
+					self.$el.toggleClass('hide-hidden-files', !showHidden);
+					self.updateSelectionSummary();
+
+					if (!showHidden) {
+						// hiding files could make the page too small, need to try rendering next page
+						self._onScroll();
+					}
+				});
+
+				this.$el.toggleClass('hide-hidden-files', !this._filesConfig.get('showhidden'));
+			}
+
+
 			if (_.isUndefined(options.detailsViewEnabled) || options.detailsViewEnabled) {
 				this._detailsView = new OCA.Files.DetailsView();
 				this._detailsView.$el.insertBefore(this.$el);
@@ -250,7 +265,7 @@
 
 			this.files = [];
 			this._selectedFiles = {};
-			this._selectionSummary = new OCA.Files.FileSummary();
+			this._selectionSummary = new OCA.Files.FileSummary(undefined, {config: this._filesConfig});
 			// dummy root dir info
 			this.dirInfo = new OC.Files.FileInfo({});
 
@@ -875,10 +890,6 @@
 		 * @return array of DOM elements of the newly added files
 		 */
 		_nextPage: function(animate) {
-			// Save full files list while rendering
-			var allFiles = this.files;
-			this.files = this._filterHiddenFiles(this.files);
-
 			var index = this.$fileList.children().length,
 				count = this.pageSize(),
 				hidden,
@@ -926,9 +937,6 @@
 				}, 0);
 			}
 
-			// Restore full files list after rendering
-			this.files = allFiles;
-
 			return newTrs;
 		},
 
@@ -967,8 +975,6 @@
 			this.$el.find('.select-all').prop('checked', false);
 
 			// Save full files list while rendering
-			var allFiles = this.files;
-			this.files = this._filterHiddenFiles(this.files);
 
 			this.isEmpty = this.files.length === 0;
 			this._nextPage();
@@ -982,9 +988,6 @@
 			this.updateSelectionSummary();
 			$(window).scrollTop(0);
 
-			// Restore full files list after rendering
-			this.files = allFiles;
-
 			this.$fileList.trigger(jQuery.Event('updated'));
 			_.defer(function() {
 				self.$el.closest('#app-content').trigger(jQuery.Event('apprendered'));
@@ -992,18 +995,14 @@
 		},
 
 		/**
-		 * Filter hidden files of the given filesArray (dot-files)
+		 * Returns whether the given file info must be hidden
 		 *
-		 * @param filesArray files to be filtered
-		 * @returns {array}
+		 * @param {OC.Files.FileInfo} fileInfo file info
+		 * 
+		 * @return {boolean} true if the file is a hidden file, false otherwise
 		 */
-		_filterHiddenFiles: function(files) {
-			if (_.isUndefined(this._filesConfig) || this._filesConfig.get('showhidden')) {
-				return files;
-			}
-			return _.filter(files, function(file) {
-				return file.name.indexOf('.') !== 0;
-			});
+		_isHiddenFile: function(file) {
+			return file.name && file.name.charAt(0) === '.';
 		},
 
 		/**
@@ -1325,6 +1324,10 @@
 
 			if (options.hidden) {
 				tr.addClass('hidden');
+			}
+
+			if (this._isHiddenFile(fileData)) {
+				tr.addClass('hidden-file');
 			}
 
 			// display actions
@@ -2300,7 +2303,7 @@
 			var $tr = $('<tr class="summary"></tr>');
 			this.$el.find('tfoot').append($tr);
 
-			return new OCA.Files.FileSummary($tr);
+			return new OCA.Files.FileSummary($tr, {config: this._filesConfig});
 		},
 		updateEmptyContent: function() {
 			var permissions = this.getDirectoryPermissions();
@@ -2447,6 +2450,7 @@
 			var summary = this._selectionSummary.summary;
 			var selection;
 
+			var showHidden = !!this._filesConfig.get('showhidden');
 			if (summary.totalFiles === 0 && summary.totalDirs === 0) {
 				this.$el.find('#headerName a.name>span:first').text(t('files','Name'));
 				this.$el.find('#headerSize a>span:first').text(t('files','Size'));
@@ -2471,6 +2475,11 @@
 					selection = directoryInfo;
 				} else {
 					selection = fileInfo;
+				}
+
+				if (!showHidden && summary.totalHidden > 0) {
+					var hiddenInfo = n('files', 'including %n hidden', 'including %n hidden', summary.totalHidden);
+					selection += ' (' + hiddenInfo + ')';
 				}
 
 				this.$el.find('#headerName a.name>span:first').text(selection);

@@ -1,12 +1,12 @@
 <?php
 /**
- * @author Joas Schilling <nickvergessen@owncloud.com>
+ * @author Joas Schilling <coding@schilljs.com>
  * @author Roeland Jago Douma <rullzer@owncloud.com>
  * @author Stefan Weil <sw@weilnetz.de>
  * @author Thomas Müller <thomas.mueller@tmit.eu>
  * @author Vincent Petry <pvince81@owncloud.com>
  *
- * @copyright Copyright (c) 2016, ownCloud, Inc.
+ * @copyright Copyright (c) 2016, ownCloud GmbH.
  * @license AGPL-3.0
  *
  * This code is free software: you can redistribute it and/or modify
@@ -191,7 +191,8 @@ class FilesPluginTest extends TestCase {
 		$this->assertEquals('http://example.com/', $propFind->get(self::DOWNLOADURL_PROPERTYNAME));
 		$this->assertEquals('foo', $propFind->get(self::OWNER_ID_PROPERTYNAME));
 		$this->assertEquals('M. Foo', $propFind->get(self::OWNER_DISPLAY_NAME_PROPERTYNAME));
-		$this->assertEquals([self::SIZE_PROPERTYNAME, self::DATA_FINGERPRINT_PROPERTYNAME], $propFind->get404Properties());
+		$this->assertEquals('my_fingerprint', $propFind->get(self::DATA_FINGERPRINT_PROPERTYNAME));
+		$this->assertEquals([self::SIZE_PROPERTYNAME], $propFind->get404Properties());
 	}
 
 	public function testGetPropertiesForFileHome() {
@@ -332,7 +333,8 @@ class FilesPluginTest extends TestCase {
 		$this->assertEquals(1025, $propFind->get(self::SIZE_PROPERTYNAME));
 		$this->assertEquals('DWCKMSR', $propFind->get(self::PERMISSIONS_PROPERTYNAME));
 		$this->assertEquals(null, $propFind->get(self::DOWNLOADURL_PROPERTYNAME));
-		$this->assertEquals([self::DOWNLOADURL_PROPERTYNAME, self::DATA_FINGERPRINT_PROPERTYNAME], $propFind->get404Properties());
+		$this->assertEquals('my_fingerprint', $propFind->get(self::DATA_FINGERPRINT_PROPERTYNAME));
+		$this->assertEquals([self::DOWNLOADURL_PROPERTYNAME], $propFind->get404Properties());
 	}
 
 	public function testGetPropertiesForRootDirectory() {

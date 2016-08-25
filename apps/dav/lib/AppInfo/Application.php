@@ -1,10 +1,11 @@
 <?php
 /**
  * @author Björn Schießle <bjoern@schiessle.org>
- * @author Joas Schilling <nickvergessen@owncloud.com>
+ * @author Georg Ehrke <georg@owncloud.com>
+ * @author Joas Schilling <coding@schilljs.com>
  * @author Thomas Müller <thomas.mueller@tmit.eu>
  *
- * @copyright Copyright (c) 2016, ownCloud, Inc.
+ * @copyright Copyright (c) 2016, ownCloud GmbH.
  * @license AGPL-3.0
  *
  * This code is free software: you can redistribute it and/or modify
@@ -26,18 +27,13 @@ use OCA\DAV\CalDAV\BirthdayService;
 use OCA\DAV\CalDAV\CalDavBackend;
 use OCA\DAV\CardDAV\CardDavBackend;
 use OCA\DAV\CardDAV\ContactsManager;
-use OCA\DAV\CardDAV\SyncJob;
 use OCA\DAV\CardDAV\SyncService;
 use OCA\DAV\Connector\Sabre\Principal;
 use OCA\DAV\DAV\GroupPrincipalBackend;
 use OCA\DAV\HookManager;
-use OCA\DAV\Migration\Classification;
-use OCA\DAV\Migration\GenerateBirthdays;
 use \OCP\AppFramework\App;
 use OCP\AppFramework\IAppContainer;
 use OCP\Contacts\IManager;
-use OCP\IUser;
-use Sabre\VObject\Reader;
 use Symfony\Component\EventDispatcher\GenericEvent;
 
 class Application extends App {
@@ -64,7 +60,8 @@ class Application extends App {
 				$c->getServer()->getUserManager(),
 				$c->query('SyncService'),
 				$c->query('CalDavBackend'),
-				$c->query('CardDavBackend')
+				$c->query('CardDavBackend'),
+				$c->getServer()->getL10N('dav')
 			);
 		});
 
@@ -110,23 +107,6 @@ class Application extends App {
 			);
 		});
 
-		$container->registerService('OCA\DAV\Migration\Classification', function ($c) {
-			/** @var IAppContainer $c */
-			return new Classification(
-				$c->query('CalDavBackend'),
-				$c->getServer()->getUserManager()
-			);
-		});
-
-		$container->registerService('OCA\DAV\Migration\GenerateBirthdays', function ($c) {
-			/** @var IAppContainer $c */
-			/** @var BirthdayService $b */
-			$b = $c->query('BirthdayService');
-			return new GenerateBirthdays(
-				$b,
-				$c->getServer()->getUserManager()
-			);
-		});
 	}
 
 	/**

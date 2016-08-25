@@ -1,16 +1,16 @@
 <?php
 /**
- * @author Alex Weirig <alex.weirig@technolink.lu>
  * @author Alexander Bergolth <leo@strike.wu.ac.at>
+ * @author Alex Weirig <alex.weirig@technolink.lu>
  * @author Arthur Schiwon <blizzz@arthur-schiwon.de>
- * @author Joas Schilling <nickvergessen@owncloud.com>
+ * @author Joas Schilling <coding@schilljs.com>
  * @author Jörn Friedrich Dreyer <jfd@butonic.de>
  * @author Lennart Rosam <hello@takuto.de>
  * @author Lukas Reschke <lukas@statuscode.ch>
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Robin McCorkell <robin@mccorkell.me.uk>
  *
- * @copyright Copyright (c) 2016, ownCloud, Inc.
+ * @copyright Copyright (c) 2016, ownCloud GmbH.
  * @license AGPL-3.0
  *
  * This code is free software: you can redistribute it and/or modify
@@ -105,12 +105,13 @@ class Configuration {
 
 	/**
 	 * @param string $name
-	 * @return mixed|void
+	 * @return mixed|null
 	 */
 	public function __get($name) {
 		if(isset($this->config[$name])) {
 			return $this->config[$name];
 		}
+		return null;
 	}
 
 	/**
@@ -181,7 +182,7 @@ class Configuration {
 				$applied[] = $inputKey;
 			}
 		}
-
+		return null;
 	}
 
 	public function readConfiguration() {

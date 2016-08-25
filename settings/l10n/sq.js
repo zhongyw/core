@@ -2,6 +2,7 @@ OC.L10N.register(
     "settings",
     {
     "Wrong password" : "Fjalëkalim i gabuar",
+    "The new password can not be the same as the previous one" : "Fjalëkalimi i ri s’mund të jetë i njëjtë me të mëparshmin",
     "No user supplied" : "S’u dha përdorues",
     "Authentication error" : "Gabim mirëfilltësimi",
     "Please provide an admin recovery password, otherwise all user data will be lost" : "Ju lutemi, jepni një fjalëkalim rikthimesh për përgjegjësin, në të kundërt të gjitha të dhënat do të humbasin",
@@ -112,6 +113,7 @@ OC.L10N.register(
     "add group" : "shto grup",
     "Invalid quota value \"{val}\"" : "Vlerë kuotash e pavlefshme \"{val}\"",
     "Changing the password will result in data loss, because data recovery is not available for this user" : "Ndryshimi i fjalëkalimit do të sjellë humbje të dhënash, ngaqë rikthimi i të dhënave s’është i përdorshëm për këtë përdorues",
+    "Password successfully changed" : "Fjalëkalimi u ndryshua me sukses",
     "A valid username must be provided" : "Duhet dhënë një emër të vlefshëm përdoruesi",
     "Error creating user: {message}" : "Gabim gjatë krijimit të përdoruesit: {message}",
     "A valid password must be provided" : "Duhet dhënë një fjalëkalim i vlefshëm",

@@ -1,9 +1,11 @@
 <?php
 /**
  * @author Christoph Wurst <christoph@owncloud.com>
+ * @author Joas Schilling <coding@schilljs.com>
  * @author Lukas Reschke <lukas@statuscode.ch>
+ * @author Thomas Müller <thomas.mueller@tmit.eu>
  *
- * @copyright Copyright (c) 2016, ownCloud, Inc.
+ * @copyright Copyright (c) 2016, ownCloud GmbH.
  * @license AGPL-3.0
  *
  * This code is free software: you can redistribute it and/or modify
@@ -106,7 +108,7 @@ class LoginController extends Controller {
 	 */
 	public function showLoginForm($user, $redirect_url, $remember_login) {
 		if ($this->userSession->isLoggedIn()) {
-			return new RedirectResponse(OC_Util::getDefaultPageUrl());
+			return new RedirectResponse($this->getDefaultUrl());
 		}
 
 		$parameters = array();
@@ -185,7 +187,7 @@ class LoginController extends Controller {
 		}
 		if ($loginResult === false) {
 			$this->session->set('loginMessages', [
-				['invalidpassword']
+				['invalidpassword'], []
 			]);
 			// Read current user and append if possible - we need to return the unmodified user otherwise we will leak the login name
 			$args = !is_null($user) ? ['user' => $originalUser] : [];
@@ -195,6 +197,9 @@ class LoginController extends Controller {
 		// requires https://github.com/owncloud/core/pull/24616
 		$this->userSession->login($user, $password);
 		$this->userSession->createSessionToken($this->request, $loginResult->getUID(), $user, $password);
+
+		// User has successfully logged in, now remove the password reset link, when it is available
+		$this->config->deleteUserValue($loginResult->getUID(), 'owncloud', 'lostpassword');
 
 		if ($this->twoFactorManager->isTwoFactorAuthenticated($loginResult)) {
 			$this->twoFactorManager->prepareTwoFactorLogin($loginResult);
@@ -214,7 +219,15 @@ class LoginController extends Controller {
 				return new RedirectResponse($location);
 			}
 		}
-		return new RedirectResponse($this->urlGenerator->linkToRoute('files.view.index'));
+
+		return new RedirectResponse($this->getDefaultUrl());
+	}
+
+	/**
+	 * @return string
+	 */
+	protected function getDefaultUrl() {
+		return OC_Util::getDefaultPageUrl();
 	}
 
 }

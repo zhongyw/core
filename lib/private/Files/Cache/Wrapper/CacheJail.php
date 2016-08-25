@@ -7,7 +7,7 @@
  * @author Roeland Jago Douma <rullzer@owncloud.com>
  * @author Vincent Petry <pvince81@owncloud.com>
  *
- * @copyright Copyright (c) 2016, ownCloud, Inc.
+ * @copyright Copyright (c) 2016, ownCloud GmbH.
  * @license AGPL-3.0
  *
  * This code is free software: you can redistribute it and/or modify
@@ -58,6 +58,9 @@ class CacheJail extends CacheWrapper {
 	 * @return null|string the jailed path or null if the path is outside the jail
 	 */
 	protected function getJailedPath($path) {
+		if ($this->root === '') {
+			return $path;
+		}
 		$rootLength = strlen($this->root) + 1;
 		if ($path === $this->root) {
 			return '';

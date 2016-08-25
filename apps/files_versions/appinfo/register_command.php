@@ -2,7 +2,7 @@
 /**
  * @author Björn Schießle <bjoern@schiessle.org>
  *
- * @copyright Copyright (c) 2016, ownCloud, Inc.
+ * @copyright Copyright (c) 2016, ownCloud GmbH.
  * @license AGPL-3.0
  *
  * This code is free software: you can redistribute it and/or modify
@@ -20,9 +20,14 @@
  */
 
 
+use OCA\Files_Versions\AppInfo\Application;
 use OCA\Files_Versions\Command\CleanUp;
+use OCA\Files_Versions\Command\ExpireVersions;
 
+$app = new Application();
+$expiration = $app->getContainer()->query('Expiration');
 $userManager = OC::$server->getUserManager();
 $rootFolder = \OC::$server->getRootFolder();
 /** @var Symfony\Component\Console\Application $application */
 $application->add(new CleanUp($rootFolder, $userManager));
+$application->add(new ExpireVersions($userManager, $expiration));

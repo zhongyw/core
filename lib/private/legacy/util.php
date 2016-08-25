@@ -8,8 +8,8 @@
  * @author Birk Borkason <daniel.niccoli@gmail.com>
  * @author Björn Schießle <bjoern@schiessle.org>
  * @author Brice Maron <brice@bmaron.net>
- * @author Christoph Wurst <christoph@owncloud.com>
  * @author Christopher Schäpers <kondou@ts.unde.re>
+ * @author Christoph Wurst <christoph@owncloud.com>
  * @author Clark Tomlinson <fallen013@gmail.com>
  * @author cmeh <cmeh@users.noreply.github.com>
  * @author Florin Peter <github@florin-peter.de>
@@ -18,7 +18,7 @@
  * @author helix84 <helix84@centrum.sk>
  * @author Individual IT Services <info@individual-it.net>
  * @author Jakob Sack <mail@jakobsack.de>
- * @author Joas Schilling <nickvergessen@owncloud.com>
+ * @author Joas Schilling <coding@schilljs.com>
  * @author Jörn Friedrich Dreyer <jfd@butonic.de>
  * @author Lukas Reschke <lukas@statuscode.ch>
  * @author Markus Goetz <markus@woboq.com>
@@ -37,7 +37,7 @@
  * @author Vincent Petry <pvince81@owncloud.com>
  * @author Volkan Gezer <volkangezer@gmail.com>
  *
- * @copyright Copyright (c) 2016, ownCloud, Inc.
+ * @copyright Copyright (c) 2016, ownCloud GmbH.
  * @license AGPL-3.0
  *
  * This code is free software: you can redistribute it and/or modify
@@ -164,6 +164,7 @@ class OC_Util {
 
 		// install storage availability wrapper, before most other wrappers
 		\OC\Files\Filesystem::addStorageWrapper('oc_availability', function ($mountPoint, $storage) {
+			/** @var \OCP\Files\Storage $storage */
 			if (!$storage->instanceOfStorage('\OC\Files\Storage\Shared') && !$storage->isLocal()) {
 				return new \OC\Files\Storage\Wrapper\Availability(['storage' => $storage]);
 			}
@@ -171,7 +172,7 @@ class OC_Util {
 		});
 
 		\OC\Files\Filesystem::addStorageWrapper('oc_encoding', function ($mountPoint, \OCP\Files\Storage $storage, \OCP\Files\Mount\IMountPoint $mount) {
-			if ($mount->getOption('encoding_compatibility', true) && !$storage->instanceOfStorage('\OC\Files\Storage\Shared') && !$storage->isLocal()) {
+			if ($mount->getOption('encoding_compatibility', false) && !$storage->instanceOfStorage('\OC\Files\Storage\Shared') && !$storage->isLocal()) {
 				return new \OC\Files\Storage\Wrapper\Encoding(['storage' => $storage]);
 			}
 			return $storage;
@@ -289,16 +290,19 @@ class OC_Util {
 	/**
 	 * Get the quota of a user
 	 *
-	 * @param string $user
+	 * @param string $userId
 	 * @return int Quota bytes
 	 */
-	public static function getUserQuota($user) {
-		$userQuota = \OC::$server->getUserManager()->get($user)->getQuota();
+	public static function getUserQuota($userId) {
+		$user = \OC::$server->getUserManager()->get($userId);
+		if (is_null($user)) {
+			return \OCP\Files\FileInfo::SPACE_UNLIMITED;
+		}
+		$userQuota = $user->getQuota();
 		if($userQuota === 'none') {
 			return \OCP\Files\FileInfo::SPACE_UNLIMITED;
-		}else{
-			return OC_Helper::computerFileSize($userQuota);
 		}
+		return OC_Helper::computerFileSize($userQuota);
 	}
 
 	/**
@@ -1143,7 +1147,8 @@ class OC_Util {
 
 		// testdata
 		$fileName = '/htaccesstest.txt';
-		$testContent = 'This is used for testing whether htaccess is properly enabled to disallow access from the outside. This file can be safely removed.';
+		// test content containing the string "HTACCESSFAIL"
+		$testContent = 'HTACCESSFAIL: This is used for testing whether htaccess is properly enabled to disallow access from the outside. This file can be safely removed.';
 
 		// creating a test file
 		$testFile = $config->getSystemValue('datadirectory', OC::$SERVERROOT . '/data') . '/' . $fileName;

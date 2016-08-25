@@ -1,6 +1,7 @@
 <?php
 /**
  * @author Björn Schießle <bjoern@schiessle.org>
+ * @author Joas Schilling <coding@schilljs.com>
  * @author Lukas Reschke <lukas@statuscode.ch>
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Robin Appelman <icewind@owncloud.com>
@@ -9,7 +10,7 @@
  * @author Thomas Müller <thomas.mueller@tmit.eu>
  * @author Vincent Petry <pvince81@owncloud.com>
  *
- * @copyright Copyright (c) 2016, ownCloud, Inc.
+ * @copyright Copyright (c) 2016, ownCloud GmbH.
  * @license AGPL-3.0
  *
  * This code is free software: you can redistribute it and/or modify
@@ -29,7 +30,6 @@
 namespace OCA\DAV\Connector\Sabre;
 
 use OC\Files\View;
-use OCA\DAV\Upload\FutureFile;
 use OCP\Files\ForbiddenException;
 use Sabre\DAV\Exception\Forbidden;
 use Sabre\DAV\Exception\NotFound;
@@ -308,15 +308,10 @@ class FilesPlugin extends ServerPlugin {
 				$displayName = $owner->getDisplayName();
 				return $displayName;
 			});
-
-			$propFind->handle(self::DATA_FINGERPRINT_PROPERTYNAME, function() use ($node) {
-				if ($node->getPath() === '/') {
-					return $this->config->getSystemValue('data-fingerprint', '');
-				}
-			});
 		}
 
-		if ($node instanceof \OCA\DAV\Files\FilesHome) {
+		if ($node instanceof \OCA\DAV\Connector\Sabre\Node
+			|| $node instanceof \OCA\DAV\Files\FilesHome) {
 			$propFind->handle(self::DATA_FINGERPRINT_PROPERTYNAME, function() use ($node) {
 				return $this->config->getSystemValue('data-fingerprint', '');
 			});
